@@ -55,11 +55,15 @@ export default function TelemetryScreen() {
     // Validar y enviar telemetría
     const handleSendTelemetry = async () => {
         if (!activeVehicle) {
-            Alert.alert('Sin vehículo activo', 'Registra y selecciona un vehículo primero');
+            Alert.alert(
+                'Sin vehículo activo',
+                'Registra y selecciona un vehículo primero'
+            );
             return;
         }
 
         const speedNum = parseInt(speed, 10);
+
         if (isNaN(speedNum) || speedNum < 0) {
             Alert.alert('Error', 'Velocidad inválida');
             return;
@@ -67,17 +71,36 @@ export default function TelemetryScreen() {
 
         const latNum = parseFloat(latitude);
         const lngNum = parseFloat(longitude);
+
         if (isNaN(latNum) || isNaN(lngNum)) {
             Alert.alert('Error', 'Coordenadas inválidas');
             return;
         }
 
         setSending(true);
+
         try {
-            await addTelemetry(activeVehicle.id, latNum, lngNum, speedNum);
-            await syncNow();
+            await addTelemetry(
+                activeVehicle.id,
+                latNum,
+                lngNum,
+                speedNum
+            );
+
+            Alert.alert(
+                'Guardado',
+                'La telemetría fue almacenada localmente.'
+            );
+
+            syncNow().catch(console.error);
+
         } catch (error: any) {
-            Alert.alert('Error', `No se pudo guardar: ${error?.message || 'Error desconocido'}`);
+
+            Alert.alert(
+                'Error',
+                `No se pudo guardar: ${error?.message || 'Error desconocido'}`
+            );
+
         } finally {
             setSending(false);
         }
@@ -152,9 +175,6 @@ export default function TelemetryScreen() {
 
             <View style={styles.pendingCard}>
                 <Text style={styles.pendingText}>Pendientes de envío: {pendingCount}</Text>
-                <TouchableOpacity onPress={syncNow} style={styles.syncButton}>
-                    <Text style={styles.syncButtonText}>Sincronizar ahora</Text>
-                </TouchableOpacity>
             </View>
         </ScrollView>
     );

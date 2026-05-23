@@ -21,6 +21,9 @@ export const useVehicleStore = create<VehicleState>((set, get) => ({
         try {
             const vehicles = await getVehicles();
             const active = await getActiveVehicle();
+
+            console.log("Loaded vehicles:", vehicles);
+            console.log("Active vehicle:", active);
             set({ vehicles, activeVehicle: active, loading: false });
         } catch (error) {
             console.error('Error loading vehicles:', error);

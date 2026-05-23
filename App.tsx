@@ -6,6 +6,7 @@ import { initDatabase } from './src/db/initDb';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { useVehicleStore } from './src/stores/vehicleStore';
 import { useTelemetryStore } from './src/stores/telemetryStore';
+import { startNetworkListener } from './src/services/networkService';
 
 export default function App() {
   const loadVehicles = useVehicleStore(state => state.loadVehicles);
@@ -16,6 +17,7 @@ export default function App() {
     initDatabase().catch(console.error);
     loadVehicles();
     loadPendingCount();
+    startNetworkListener();
     const interval = setInterval(() => {
       syncNow();
     }, 30000);
